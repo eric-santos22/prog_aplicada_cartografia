@@ -1,0 +1,11 @@
+[workspace]
+authors = ["eric-santos22 <ericduarteds@gmail.com>"]
+channels = ["conda-forge"]
+name = "primeira_entrega"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.14.3,<3.15"
