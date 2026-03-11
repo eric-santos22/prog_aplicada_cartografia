@@ -17,24 +17,22 @@ class Downloader:
         self.dir = Path(destination_directory)
         os.makedirs(self.dir, exist_ok=True)
 
-    def _status(self, response_code):
+    def _status(self, response: requests.Response, response_code):
         match response_code:
             case 200:
                 log.logger.success("Successfull request")
             case 404:
-                warnings.warn("404: url returns nothing", RuntimeWarning)
+                log.logger.warning("404: url returns nothing")
+                response.raise_for_status()
             case 500:
-                warnings.warn("500: server raised error", RuntimeWarning)
+                warnings.warn("500: server raised error")
+                response.raise_for_status()
             case _:
                 print(f"Received unexpected status: {response_code}")
 
     def download_file(self):
-        """
-        Args:
-            - name: filename with extension
-        """
         response = requests.get(self.url, stream=True)
-        self._status(response.status_code)
+        self._status(response, response.status_code)
         name = self.url.split("/")[-1]
         destination_path =  self.dir / name
 
@@ -44,7 +42,7 @@ class Downloader:
 
 if __name__ == "__main__":
     url = "https://geoftp.ibge.gov.br/cartas_e_mapas/folhas_topograficas/vetoriais/escala_100mil/projeto_ba100/itapicuru1792/a_vbd_lcar.zip"
-    path = r"C:\Users\ericd\Proj Cart\downloader_project"
+    path = Path("C:/Users/ericd/Proj Cart/prog_aplicada_cartografia/downloader_project")
     
     download = Downloader(url, path).download_file()
 
