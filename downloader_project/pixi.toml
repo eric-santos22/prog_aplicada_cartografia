@@ -1,7 +1,7 @@
 [workspace]
 authors = ["eric-santos22 <ericduarteds@gmail.com>"]
 channels = ["conda-forge"]
-name = "primeira_entrega"
+name = "downloader_project"
 platforms = ["win-64"]
 version = "0.1.0"
 
@@ -9,5 +9,5 @@ version = "0.1.0"
 
 [dependencies]
 python = ">=3.14.3,<3.15"
-pandas = ">=3.0.1,<4"
-geopandas = ">=1.1.2,<2"
+requests = ">=2.32.5,<3"
+loguru = ">=0.7.3,<0.8"
