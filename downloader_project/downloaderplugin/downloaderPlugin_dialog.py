@@ -26,7 +26,9 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
-from .download_file import Downloader
+from qgis.core import QgsVectorLayer, QgsProject
+from qgis.PyQt.QtWidgets import QApplication
+from .downloader_class import Downloader
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'downloaderPlugin_dialog_base.ui'))
@@ -36,16 +38,48 @@ class downloaderPluginDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(downloaderPluginDialog, self).__init__(parent)
-        # Set up the user interface from Designer through FORM_CLASS.
-        # After self.setupUi() you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        self.pushButton.clicked.connect(self.run_download)
+        self.barra_progresso.setVisible(True) 
+        self.barra_progresso.setValue(0)
+        self._buttons_config()
+
+    def _buttons_config(self):
+        self.botao_autorizar_download.clicked.connect(self.run_download)
+        self.botao_fechar.clicked.connect(self.close)
+
+    def _add_vector_layer(self, file_path, layer_name):
+        layer = QgsVectorLayer(str(file_path), layer_name, "ogr")
+        if not layer.isValid():
+            print("Layer failed to load!")
+            return
+        QgsProject.instance().addMapLayer(layer)
+    
+    def _update_progress_bar(self, downloaded, total_size):
+        """This function is called by the Downloader class."""
+        if total_size:
+            self.barra_progresso.setMaximum(total_size)
+            self.barra_progresso.setValue(downloaded)
+        else:
+            self.barra_progresso.setMaximum(0)
+            self.barra_progresso.setValue(0)
+            
+        QApplication.processEvents()
 
     def run_download(self):
-        url = self.url_load.text()
-        path = self.file_path.filePath()
-        downloader = Downloader(url, path)
-        downloader.download_file()
+        self.barra_progresso.setVisible(True)
+        url = self.campo_url.text()
+        path = self.campo_pasta.filePath()
+        file_name = self.campo_nome_arquivo.text()
+
+        if file_name == "":
+            downloader = Downloader(url, path)
+        else:
+            downloader = Downloader(url, path, file_name)
+        downloader.download_file(progress_callback=self._update_progress_bar)
+
+        if self.checkbox_adicionar_camada.isChecked():
+            full_path = downloader._get_destination_path()     
+            name = file_name if file_name else "Downloaded Layer"
+            self._add_vector_layer(full_path, name)
+        
+        self.barra_progresso.setVisible(False)
