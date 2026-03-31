@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>700</width>
-    <height>470</height>
+    <height>642</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -137,9 +137,9 @@ QProgressBar::chunk {
          <property name="text">
           <string>Baixe arquivos por URL, escolha a pasta de destino e controle opções extras do download.</string>
          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -155,7 +155,7 @@ QProgressBar::chunk {
       <item>
        <widget class="QLabel" name="label_url">
         <property name="text">
-         <string>Link direto para download</string>
+         <string>Link para download</string>
         </property>
        </widget>
       </item>
@@ -167,22 +167,21 @@ QProgressBar::chunk {
         <item>
          <widget class="QPushButton" name="botao_restaurar_url">
           <property name="text">
-           <string>Usar URL padrão do IBGE</string>
+           <string>Usar fontes pré-definidas</string>
           </property>
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_url">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QComboBox" name="comboBox_urls">
+          <property name="editable">
+           <bool>false</bool>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+          <item>
+           <property name="text">
+            <string>https://geoftp.ibge.gov.br/organizacao_do_territorio/malhas_territoriais/malhas_municipais/municipio_2024/Brasil/BR_Municipios_2024.zip</string>
+           </property>
+          </item>
+         </widget>
         </item>
        </layout>
       </item>
@@ -195,6 +194,16 @@ QProgressBar::chunk {
       <string>Destino do arquivo</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_destino">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_nome_arquivo">
+        <property name="text">
+         <string>Nome do arquivo (com extensão)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="campo_nome_arquivo"/>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_pasta">
         <property name="text">
@@ -202,25 +211,12 @@ QProgressBar::chunk {
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="campo_pasta"/>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="botao_procurar">
-        <property name="text">
-         <string>Procurar...</string>
+      <item row="0" column="1">
+       <widget class="QgsFileWidget" name="campo_pasta">
+        <property name="storageMode">
+         <enum>QgsFileWidget::GetDirectory</enum>
         </property>
        </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_nome_arquivo">
-        <property name="text">
-         <string>Nome do arquivo</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="3">
-       <widget class="QLineEdit" name="campo_nome_arquivo"/>
       </item>
      </layout>
     </widget>
@@ -232,16 +228,15 @@ QProgressBar::chunk {
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_opcoes">
       <item>
-       <widget class="QCheckBox" name="checkbox_sobrescrever">
-        <property name="text">
-         <string>Sobrescrever o arquivo se ele já existir</string>
+       <widget class="QCheckBox" name="checkbox_adicionar_camada">
+        <property name="enabled">
+         <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="checkbox_extrair_zip">
         <property name="text">
-         <string>Extrair automaticamente quando o arquivo for .zip</string>
+         <string>Adicionar Camada no QGIS</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -298,6 +293,13 @@ QProgressBar::chunk {
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
