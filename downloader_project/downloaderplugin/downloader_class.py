@@ -28,7 +28,7 @@ class Downloader:
         destination_path =  self._get_destination_path()
         with requests.get(self.url, stream=True) as response:
             response.raise_for_status()
-            total_size = response.headers.get('content-lenght')
+            total_size = response.headers.get('content-length')
             if total_size:
                 total_size = int(total_size)
             downloaded = 0
